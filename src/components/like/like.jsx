@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 
 class Like extends Component {
-  state = {
-    liked: false
-  };
-
   render() {
-    if (this.state.liked) {
-      return <i className="fa fa-heart" onClick={() => this.toggle()} />;
-    } else {
-      return <i className="fa fa-heart-o" onClick={() => this.toggle()} />;
-    }
-  }
+    let className = "fa fa-heart";
 
-  toggle() {
-    this.setState({ liked: !this.state.liked });
+    if (!this.props.liked) {
+      className = "fa fa-heart-o";
+    }
+
+    return (
+      <i
+        className={className}
+        onClick={this.props.onLikeClick}
+        aria-hidden="true"
+        style={{ cursor: "pointer" }}
+      />
+    );
   }
 }
 
