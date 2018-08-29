@@ -1,22 +1,21 @@
-import React, { Component } from "react";
+import React from "react";
 
-class Like extends Component {
-  render() {
-    let className = "fa fa-heart";
+// Stateless Function Component
+const Like = props => {
+  let className = "fa fa-heart";
 
-    if (!this.props.liked) {
-      className = "fa fa-heart-o";
-    }
-
-    return (
-      <i
-        className={className}
-        onClick={this.props.onLikeClick}
-        aria-hidden="true"
-        style={{ cursor: "pointer" }}
-      />
-    );
+  if (!props.liked) {
+    className = "fa fa-heart-o";
   }
-}
+
+  return (
+    <i
+      className={className}
+      onClick={props.onLikeClick}
+      aria-hidden="true"
+      style={{ cursor: "pointer" }}
+    />
+  );
+};
 
 export default Like;
