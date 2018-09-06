@@ -12,11 +12,14 @@ class Movies extends Component {
     movies: [],
     genres: [],
     pageSize: 4,
-    currentPage: 1
+    currentPage: 1,
+    selectedGenre: null
   };
 
   componentDidMount() {
-    this.setState({ movies: getMovies(), genres: getGenres() });
+    const genres = [{ _id: "", name: "All" }, ...getGenres()];
+
+    this.setState({ movies: getMovies(), genres: genres });
   }
 
   render() {
@@ -26,8 +29,15 @@ class Movies extends Component {
       return <p>There are no movies in the database</p>;
     }
 
+    const filteredMovies =
+      this.state.selectedGenre && this.state.selectedGenre._id
+        ? this.state.movies.filter(
+            movie => movie.genre._id === this.state.selectedGenre._id
+          )
+        : this.state.movies;
+
     const movies = paginate(
-      this.state.movies,
+      filteredMovies,
       this.state.currentPage,
       this.state.pageSize
     );
@@ -39,12 +49,13 @@ class Movies extends Component {
             <ListGroup
               items={this.state.genres}
               onItemSelect={this.handleGenreSelect}
+              selectedItem={this.state.selectedGenre}
               textProperty="name"
               valueProperty="_id"
             />
           </div>
           <div className="col">
-            <p>There are {movieCount} movies in the database</p>
+            <p>There are {filteredMovies.length} movies in the database</p>
             <table className="table">
               <thead>
                 <tr>
@@ -83,7 +94,7 @@ class Movies extends Component {
             </table>
 
             <Pagination
-              itemsCount={movieCount}
+              itemsCount={filteredMovies.length}
               pageSize={this.state.pageSize}
               currentPage={this.state.currentPage}
               onPageChanged={this.handlePageChanged}
@@ -111,7 +122,7 @@ class Movies extends Component {
   };
 
   handleGenreSelect = genre => {
-    console.log("selectedgenre", genre);
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 }
 
