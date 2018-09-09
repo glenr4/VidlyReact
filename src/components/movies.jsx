@@ -18,6 +18,15 @@ class Movies extends Component {
     sortColumn: null
   };
 
+  columns = [
+    { title: "Title", path: "title" },
+    { title: "Genre", path: "genre.name" },
+    { title: "Stock", path: "numberInStock" },
+    { title: "Rate", path: "dailyRentalRate" },
+    { key: "like" },
+    { key: "delete" }
+  ];
+
   componentDidMount() {
     const genres = [{ _id: "", name: "All" }, ...getGenres()];
 
@@ -70,6 +79,7 @@ class Movies extends Component {
           <div className="col">
             <p>There are {filteredMovies.length} movies in the database</p>
             <MoviesTable
+              columns={this.columns}
               movies={pagedMovies}
               onLike={this.handleLike}
               onDelete={this.handleDelete}
