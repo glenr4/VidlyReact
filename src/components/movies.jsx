@@ -99,7 +99,12 @@ class Movies extends Component {
   };
 
   handleSort = path => {
-    const order = this.state.sortColumn.order === "asc" ? "desc" : "asc";
+    let order;
+    if (this.state.sortColumn.path === path) {
+      order = this.state.sortColumn.order === "asc" ? "desc" : "asc";
+    } else {
+      order = "asc";
+    }
     this.setState({ sortColumn: { path, order } });
   };
 
