@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import ListGroup from "./common/listGroup/listGroup";
 import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable/moviesTable";
+import lodash from "lodash";
 
 class Movies extends Component {
   state = {
@@ -22,7 +23,8 @@ class Movies extends Component {
     this.setState({
       movies: getMovies(),
       genres: genres,
-      selectedGenre: genres[0]
+      selectedGenre: genres[0],
+      sortColumn: { path: "title", order: "asc" }
     });
   }
 
@@ -40,8 +42,14 @@ class Movies extends Component {
           )
         : this.state.movies;
 
-    const pagedMovies = paginate(
+    const sortedMovies = lodash.orderBy(
       filteredMovies,
+      [this.state.sortColumn.path],
+      [this.state.sortColumn.order]
+    );
+
+    const pagedMovies = paginate(
+      sortedMovies,
       this.state.currentPage,
       this.state.pageSize
     );
@@ -62,8 +70,9 @@ class Movies extends Component {
             <p>There are {filteredMovies.length} movies in the database</p>
             <MoviesTable
               movies={pagedMovies}
-              onLike={movie => this.handleLike(movie)}
-              onDelete={movie => this.handleDelete(movie)}
+              onLike={this.handleLike}
+              onDelete={this.handleDelete}
+              onSort={this.handleSort}
             />
             <Pagination
               itemsCount={filteredMovies.length}
@@ -77,17 +86,22 @@ class Movies extends Component {
     );
   }
 
-  handleDelete(movie) {
+  handleDelete = movie => {
     const movies = this.state.movies.filter(m => m._id !== movie._id);
     this.setState({ movies: movies });
-  }
+  };
 
-  handleLike(movie) {
+  handleLike = movie => {
     const movies = [...this.state.movies];
     const index = movies.indexOf(movie);
     movies[index].liked = !movies[index].liked;
     this.setState(movies);
-  }
+  };
+
+  handleSort = path => {
+    const order = this.state.sortColumn.order === "asc" ? "desc" : "asc";
+    this.setState({ sortColumn: { path, order } });
+  };
 
   handlePageChanged = pageNum => {
     this.setState({ currentPage: pageNum });
